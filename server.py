@@ -1,3 +1,4 @@
+
 import socket
 import tkinter as tk 
 from tkinter import messagebox
@@ -11,7 +12,7 @@ from tkinter import Entry, Tk
 import requests
 
 from bs4 import BeautifulSoup
-
+import tkinter.font
 
 
 HOST = "127.0.0.1"
@@ -33,6 +34,7 @@ serverName = "TRUONGVANHAO\SQLEXPRESS"
 databaseAccount = "account_socket"
 databaseCurency = ""
 
+FONT_Nueva = "Nueva Std Cond"
 
 
 # lay du lieu tu html
@@ -111,6 +113,7 @@ def clientLogin(sck):
         return
     
     try:
+        
         cursor = connectToDatabase()
         cursor.execute("select password from User_account where username = ?", username)
         check_password = cursor.fetchone()
@@ -182,7 +185,9 @@ def connectToDatabase():
 
 # xu ly client da dang nhap vao
 def handleClient(conn, addr):
+    
     while True:
+        
         option = conn.recv(1024).decode(FORMAT)
 
 
@@ -193,6 +198,8 @@ def handleClient(conn, addr):
             clientSignup(conn)
         elif option == LOGOUT:
             print("Client disconnected!")
+    
+        
             
     
     
@@ -208,11 +215,16 @@ def runServer():
             print("Conn: ", conn.getsockname())
             
             thr = threading.Thread(target=handleClient, args=(conn, addr))
-            thr.daemon = False
+            thr.daemon = True
             thr.start()
-       
-    except:
-        conn.close()
+            
+        
+        
+    except :
+        
+        print("SERVER is closed")
+        SERVER.close()
+
         
     
     
@@ -256,8 +268,8 @@ class serverCurrencyExchange(tk.Tk):
     # ask when quit
     def closeApp(self):
         if messagebox.askokcancel("Quit", "You really want to quit this usefull app ?"):
+            SERVER.close()
             self.destroy()
-            SERVER.shutdown
             
             
     def loginServer(self, curFrame):
@@ -278,17 +290,32 @@ class startPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.configure(bg="bisque2")
         
-        label_title = tk.Label(self, text="\nLOGIN SERVER\n", fg='#20639b',bg="bisque2",font=("Times New Roman", 20, "bold"))
+        style = ttk.Style(self)
+
         
-        label_pass = tk.Label(self, text="Password ",fg='#20639b',bg="bisque2",font=("Times New Roman", 12))
+        # thiet ke entry
+        style.map('TEntry',   foreground=[
+                    ('disabled', 'gray'),
+                    ('focus !disabled', 'red'),
+                    ('hover !disabled', 'blue')])
+        # thiet ke button
+        style.map('TButton', foreground=[('pressed', 'blue'),
+                            ('active', 'red')])
         
-        self.label_notice = tk.Label(self,text="",fg='red',bg="bisque2")
+
+        label_title = ttk.Label(self, background = "yellow",foreground="blue" ,text="\nLOGIN SERVER\n",font=(FONT_Nueva, 30, "bold"))
+        label_title.configure(width=500,anchor="n")
+        label_pass = ttk.Label(self, text="Password",foreground="blue",background = "bisque2",font=(FONT_Nueva, 14))
         
-        label_user = tk.Label(self, text="Username ",fg='#20639b',bg="bisque2",font=("Times New Roman", 12))
-        self.entry_user = tk.Entry(self,width=30,bg='light yellow')
-        self.entry_pass = tk.Entry(self,width=30,show="*",bg='light yellow')
+        self.label_notice = ttk.Label(self,text="",background = "bisque2",foreground="red")
         
-        button_log = tk.Button(self,text="LOG IN", bg="#20639b",fg='floral white', command = lambda: app_controller.loginServer(self)) 
+        
+        label_user = ttk.Label(self, text="Username",foreground="blue",background = "bisque2",font=(FONT_Nueva, 14))
+        self.entry_user = ttk.Entry(self,width=40)
+        self.entry_pass = ttk.Entry(self,width=40 ,show="*")
+        
+        
+        button_log = ttk.Button(self,text="LOG IN",cursor= "hand1",command = lambda: app_controller.loginServer(self)) 
         button_log.configure(width=20)
 
         
@@ -308,6 +335,8 @@ class adminPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="bisque2")
+        
+        
         
         
 SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -22,34 +22,14 @@ LOGOUT = "logout"
 SUCCESS = "success"
 FAIL = "fail"
 
-CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_addr = (HOST, PORT)
-CLIENT.connect(server_addr)
 
-def sendList(CLIENT, list):
-    
-    for item in list:
-        CLIENT.sendall(item.encode(FORMAT))
-        #wait response
-        CLIENT.recv(1024)
-        
-    msg = "end"
-    CLIENT.send(msg.encode(FORMAT))
-    
-def clientLogin(CLIENT):
-    
-    username = input('Username: ')
-    password = input('Password: ')
-    account = []
-    #check account
-    account.append(username)
-    account.append(password)
-    #send Account to server to check
-    sendList(CLIENT, account)
+
+
     
 
 
 
+    
 
 #GUI DESIGN APP
 class currencyExchangeRate_VietNam_App(tk.Tk):
@@ -86,6 +66,10 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         else:
             self.geometry("500x200")
         frame.tkraise()
+        
+
+    
+        
     # ask when quit
     def closeApp(self):
         if messagebox.askokcancel("Quit", "You really want to quit this usefull app ?"):
@@ -101,8 +85,8 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             username = curFrame.entry_user.get()
             password = curFrame.entry_pass.get()
             if username == "" or password == "":
-                curFrame.label_notice = "Fields cannot be empty"
-                return 
+                curFrame.label_notice["text"] = "Fields cannot be empty"
+                 
             
             # Notice to server for starting log in
             option = LOGIN
@@ -141,6 +125,8 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             
             
         except:
+            messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
+            
             curFrame.label_notice["text"] = "Error: Server is not responding"
             print("Error: Server is not responding")
     
@@ -195,7 +181,8 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         except:
             curFrame.label_notice["text"] = "Error: Server is not responding"
             print("Error: Server is not responding")
-            
+    
+    
         
 class startPage(tk.Frame):
     def __init__(self, parent, app_controller):
@@ -219,6 +206,8 @@ class startPage(tk.Frame):
         button_log.configure(width=20)
         button_sign = tk.Button(self,text="SIGN UP",bg="#20639b",fg='floral white', command = lambda: app_controller.showPage(signupPage)) 
         button_sign.configure(width=20)
+        button_refresh = tk.Button(self,text="REFRESH",bg="#20639b",fg='floral white', command = lambda: app_controller.serverDisconnect(CLIENT)) 
+        button_refresh.configure(width=20)
         
         
         label_title.pack(pady=5)
@@ -229,7 +218,8 @@ class startPage(tk.Frame):
         self.label_notice.pack()
 
         button_log.pack(pady=5)
-        button_sign.pack()
+        button_sign.pack(pady=5)
+        button_refresh.pack()
         
         
 class signupPage(tk.Frame):
@@ -280,49 +270,22 @@ class homePage(tk.Frame):
         # tra cuu thong tin
 
 
-app = currencyExchangeRate_VietNam_App()
+
+
+
 
 
 
 
 try: 
+    app = currencyExchangeRate_VietNam_App()
+    CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_addr = (HOST, PORT)
+    CLIENT.connect(server_addr)
     app.mainloop()
 except:
+    messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
     print("ERROR! CLIENT CAN'T CONNECT TO SERVER")
     CLIENT.close()
 finally:
     CLIENT.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-CLIENT.close();
