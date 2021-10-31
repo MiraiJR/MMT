@@ -8,8 +8,8 @@ import threading
 from types import NoneType
 import time
 
-
-HOST = "127.0.0.1"
+import tkinter.font
+HOST = ""
 PORT = 65432
 FORMAT = "utf-8"
 DISCONNECT = "x"
@@ -22,14 +22,10 @@ LOGOUT = "logout"
 SUCCESS = "success"
 FAIL = "fail"
 
+FONT_Nueva = "Nueva Std Cond"
 
+CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-
-    
-
-
-
-    
 
 #GUI DESIGN APP
 class currencyExchangeRate_VietNam_App(tk.Tk):
@@ -49,11 +45,11 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (startPage, homePage, signupPage, adminPage):
+        for F in ( ipServer,startPage, homePage, signupPage, adminPage):
             frame = F(container, self)
             frame.grid(row = 0, column = 0, sticky="nsew")
             self.frames[F] = frame
-        self.frames[startPage].tkraise()
+        self.frames[ipServer].tkraise()
     def showPage(self, FrameClass):
         self.frames[FrameClass].tkraise()
     
@@ -182,32 +178,57 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             curFrame.label_notice["text"] = "Error: Server is not responding"
             print("Error: Server is not responding")
     
+    def getIp(self, curFrame):
+        HOST = curFrame.entry_ip.get()
+        if HOST != "":
+            try:
+                server_addr = (HOST, PORT)
+                CLIENT.connect(server_addr)
+                self.showFrame(startPage)
+            except:
+                messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
+                print("ERROR! CLIENT CAN'T CONNECT TO SERVER")
+                CLIENT.close()
+            
+        else:
+            messagebox.showerror(title="ERROR", message="IP SERVER DON'T CORRECT")
+            
+            
     
         
 class startPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
-        self.configure(bg="bisque2")
+        self.configure(bg="#ffbee3")
         
         
+        style = ttk.Style(self)
+
         
+        # thiet ke entry
+        style.map('TEntry',   foreground=[
+                    ('disabled', 'gray'),
+                    ('focus !disabled', 'red'),
+                    ('hover !disabled', 'blue')])
+        # thiet ke button
+        style.map('TButton', foreground=[('pressed', 'blue'),
+                            ('active', 'red')])
           
-        label_title = tk.Label(self, text="LOGIN", fg='#20639b',bg="bisque2",font=("Times New Roman", 16, "bold"))
+        label_title = ttk.Label(self, text="LOGIN", foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 30, "bold"))
         
-        label_pass = tk.Label(self, text="Password ",fg='#20639b',bg="bisque2",font=("Times New Roman", 12))
+        label_pass = ttk.Label(self, text="Password ",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
         
-        self.label_notice = tk.Label(self,text="",fg='red',bg="bisque2")
+        self.label_notice = ttk.Label(self,foreground="red",background = "#ffbee3",text="")
         
-        label_user = tk.Label(self, text="Username ",fg='#20639b',bg="bisque2",font=("Times New Roman", 12))
-        self.entry_user = tk.Entry(self,width=30,bg='light yellow')
-        self.entry_pass = tk.Entry(self,width=30,show="*",bg='light yellow')
+        label_user = ttk.Label(self, text="Username ",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
+        self.entry_user = ttk.Entry(self,width=30)
+        self.entry_pass = ttk.Entry(self,width=30,show="*")
         
-        button_log = tk.Button(self,text="LOG IN", bg="#20639b",fg='floral white', command = lambda: app_controller.loginApp(self, CLIENT)) 
+        button_log = ttk.Button(self,text="LOG IN",cursor= "hand1",  command = lambda: app_controller.loginApp(self, CLIENT)) 
         button_log.configure(width=20)
-        button_sign = tk.Button(self,text="SIGN UP",bg="#20639b",fg='floral white', command = lambda: app_controller.showPage(signupPage)) 
+        button_sign = ttk.Button(self,text="SIGN UP",cursor= "hand1", command = lambda: app_controller.showPage(signupPage)) 
         button_sign.configure(width=20)
-        button_refresh = tk.Button(self,text="REFRESH",bg="#20639b",fg='floral white', command = lambda: app_controller.serverDisconnect(CLIENT)) 
-        button_refresh.configure(width=20)
+
         
         
         label_title.pack(pady=5)
@@ -219,29 +240,39 @@ class startPage(tk.Frame):
 
         button_log.pack(pady=5)
         button_sign.pack(pady=5)
-        button_refresh.pack()
+
         
         
 class signupPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
-        self.configure(bg="bisque2")
-        tk.Frame.__init__(self, parent)
-        self.configure(bg="bisque2")
+        self.configure(bg="#ffbee3")
+        style = ttk.Style(self)
+
         
-        label_title = tk.Label(self, text="SIGNUP", fg='#20639b',bg="bisque2", font=("Times New Roman", 16, "bold"))
-        label_user = tk.Label(self, text="Username",fg='#20639b',bg="bisque2",font=("Times New Roman", 12))
-        label_pass = tk.Label(self, text="Password",fg='#20639b',bg="bisque2",font=("Times New Roman", 12))
-        label_passAgain = tk.Label(self, text="Password again",fg='#20639b',bg="bisque2",font=("Times New Roman", 12))
+        # thiet ke entry
+        style.map('TEntry',   foreground=[
+                    ('disabled', 'gray'),
+                    ('focus !disabled', 'red'),
+                    ('hover !disabled', 'blue')])
+        # thiet ke button
+        style.map('TButton', foreground=[('pressed', 'blue'),
+                            ('active', 'red')])
         
-        self.label_notice = tk.Label(self,text="",bg="bisque2")
-        self.entry_user = tk.Entry(self,width=30,bg='light yellow')
-        self.entry_pass = tk.Entry(self,width=30,show="*",bg='light yellow')
-        self.entry_passAgain = tk.Entry(self,width=30,show="*",bg='light yellow')
         
-        button_log = tk.Button(self,text="RETURN LOG IN", bg="#20639b",fg='floral white', command = lambda: app_controller.showPage(startPage)) 
+        label_title = ttk.Label(self, text="SIGNUP", foreground="blue",background = "#ffbee3", font=(FONT_Nueva, 30, "bold"))
+        label_user = ttk.Label(self, text="Username",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
+        label_pass = ttk.Label(self, text="Password",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
+        label_passAgain = ttk.Label(self, text="Password again",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
+        
+        self.label_notice = ttk.Label(self,text="",foreground="red",background = "#ffbee3",)
+        self.entry_user = ttk.Entry(self,width=30)
+        self.entry_pass = ttk.Entry(self,width=30,show="*")
+        self.entry_passAgain = ttk.Entry(self,width=30,show="*")
+        
+        button_log = ttk.Button(self,text="RETURN LOG IN", cursor= "hand1", command = lambda: app_controller.showPage(startPage)) 
         button_log.configure(width=20)
-        button_sign = tk.Button(self,text="SIGN UP",bg="#20639b",fg='floral white',  command = lambda: app_controller.signupApp(self, CLIENT)) 
+        button_sign = ttk.Button(self,text="SIGN UP", cursor= "hand1", command = lambda: app_controller.signupApp(self, CLIENT)) 
         button_sign.configure(width=20)
         
         
@@ -264,28 +295,64 @@ class adminPage(tk.Frame):
 class homePage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
-        self.configure(bg="bisque2")
-        label_title = tk.Label(self, text="HOMEPAGE", fg='#20639b',bg="bisque2")
-        label_title.pack()
+        self.configure(bg="#ffbee3")
+        
+        style = ttk.Style(self)
+
+        
+        # thiet ke entry
+        style.map('TEntry',   foreground=[
+                    ('disabled', 'gray'),
+                    ('focus !disabled', 'red'),
+                    ('hover !disabled', 'blue')])
+        # thiet ke button
+        style.map('TButton', foreground=[('pressed', 'blue'),
+                            ('active', 'red')])
+        
+        self.label_title = ttk.Label(self, background = "#ffbee3",text="HOMEPAGE",font=(FONT_Nueva, 30, "bold")).grid(row=0, column=0, sticky=E)
+        
+        self.entry_search = ttk.Entry(self, width=40, font=(FONT_Nueva, 14)).grid(row=1, column=0, sticky=E)
+        
+        self.btn_search = ttk.Button(self, text="SEARCH",cursor= "hand1").grid(row=1,column=0, sticky=E)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         # tra cuu thong tin
+class ipServer(tk.Frame): #page nhap dia chi ip server
+    def __init__(self, parent, app_controller):
+        tk.Frame.__init__(self, parent)
+        self.configure(bg="#ffbee3")
+        
+        style = ttk.Style(self)
 
-
-
-
-
-
-
-
-
-try: 
-    app = currencyExchangeRate_VietNam_App()
-    CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_addr = (HOST, PORT)
-    CLIENT.connect(server_addr)
-    app.mainloop()
-except:
-    messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
-    print("ERROR! CLIENT CAN'T CONNECT TO SERVER")
-    CLIENT.close()
-finally:
-    CLIENT.close()
+        
+        # thiet ke entry
+        style.map('TEntry',   foreground=[
+                    ('disabled', 'gray'),
+                    ('focus !disabled', 'red'),
+                    ('hover !disabled', 'blue')])
+        # thiet ke button
+        style.map('TButton', foreground=[('pressed', 'blue'),
+                            ('active', 'red')])
+        
+        label_title = ttk.Label(self, text="INPUT IP SERVER", foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 30, "bold"))
+        
+        self.entry_ip = ttk.Entry(self, width=40, font=(FONT_Nueva, 14))
+        
+        btn = ttk.Button(self, text="CONNECT",cursor= "hand1", command = lambda: app_controller.getIp(self))
+        btn.configure(width=30)
+        
+        label_title.pack(pady=5)
+        self.entry_ip.pack(pady=5)
+        btn.pack(pady=5)
+        
+        
+app = currencyExchangeRate_VietNam_App()
+app.mainloop()
