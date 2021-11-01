@@ -1,4 +1,3 @@
-
 import socket
 import tkinter as tk 
 from tkinter import messagebox
@@ -15,13 +14,15 @@ import time
 
 HOST = "127.0.0.1"
 PORT = 65432
-FORMAT = "utf-8"
+FORMAT = "utf8"
 DISCONNECT = "x"
 
 #option 
 SIGNUP = "signup"
 LOGIN = "login"
 LOGOUT = "logout"
+SEARCH = "search"
+
 
 SUCCESS = "success"
 FAIL = "fail"
@@ -174,6 +175,42 @@ def clientSignup(sck):
         createNewAccount(username, password)
         print("Sign up successfully!") 
 
+# client tim kiem du lieu
+def clientSearchInfo(sck):
+    dataCovid = getDataFromJson()
+    
+    inputsearch = sck.recv(1024).decode(FORMAT)
+    
+    print("Search: ", inputsearch)
+    
+    sck.sendall(inputsearch.encode(FORMAT))
+    
+    checkInp = False
+    temp = []
+    for row in dataCovid:
+        if str(row[0]) == inputsearch:
+            temp = row
+            checkInp = True
+            sck.sendall("True".encode(FORMAT))
+            break
+    
+    
+    
+    if checkInp == True:
+        startSend = sck.recv(1024).decode(FORMAT)
+        if startSend == "start":
+            for item in temp:
+                kj = str(item)
+                sck.sendall(kj.encode(FORMAT))
+                sck.recv(1024)
+            sck.sendall("end".encode(FORMAT))
+    else:
+        sck.sendall("False".encode(FORMAT))
+            
+    
+
+
+
 # ket noi database tai khoan
 def connectToDatabase():
     adminAcc = "admin" #tai khoan admin
@@ -195,6 +232,8 @@ def handleClient(conn, addr):
         elif option == LOGOUT:
             print("Client: ", addr, " disconnected")
             removeActiveAccount(conn, addr)
+        elif option == SEARCH:
+            clientSearchInfo(conn)
             
     
         
@@ -426,7 +465,7 @@ class dataPage(tk.Frame):
         
         
     def updateData(self):
-        self.table.delete
+        self.table.delete(*self.table.get_children())
         time.sleep(1)
         dataCorona = getDataFromJson()
         for row in dataCorona:

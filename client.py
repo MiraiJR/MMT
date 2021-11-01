@@ -7,17 +7,21 @@ from tkinter import *
 import threading
 from types import NoneType
 import time
-
+import tkinter.font as fnt
 import tkinter.font
+
+
 HOST = ""
 PORT = 65432
-FORMAT = "utf-8"
+FORMAT = "utf8"
 DISCONNECT = "x"
 
 #option 
 SIGNUP = "signup"
 LOGIN = "login"
 LOGOUT = "logout"
+SEARCH = "search"
+
 
 SUCCESS = "success"
 FAIL = "fail"
@@ -26,6 +30,7 @@ FONT_Nueva = "Nueva Std Cond"
 
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+dataSearch = []
 
 #GUI DESIGN APP
 class currencyExchangeRate_VietNam_App(tk.Tk):
@@ -78,6 +83,7 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
     # login
     def loginApp(self, curFrame, sck):
         try: 
+            dataSearch.clear()
             username = curFrame.entry_user.get()
             password = curFrame.entry_pass.get()
             if username == "" or password == "":
@@ -177,6 +183,49 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         except:
             curFrame.label_notice["text"] = "Error: Server is not responding"
             print("Error: Server is not responding")
+    
+    
+    # client tim kiem du lieu 
+    def searchData(self, curFrame, sck):
+        try:
+            dataRecv = []
+            inputsearch = curFrame.entry_search.get()
+            if inputsearch == "":
+                curFrame.label_notice["text"] = "Empty values!"
+                return
+            
+            
+            option = SEARCH
+            sck.sendall(option.encode(FORMAT))
+            
+            sck.sendall(inputsearch.encode(FORMAT))
+            print("Search: ", inputsearch)
+            
+            sck.recv(1024)
+            print("Server responded") 
+            
+            accepted = sck.recv(1024).decode(FORMAT)
+            print("Accepted: " + accepted)
+            
+            if accepted == "True":
+                sck.sendall("start".encode(FORMAT))
+                item = sck.recv(1024).decode(FORMAT)
+                while(item != "end"):
+                    sck.sendall(item.encode(FORMAT))
+                    dataRecv.append(item)
+                    item = sck.recv(1024).decode(FORMAT)
+                    
+                dataSearch.append(dataRecv)
+                print(dataSearch)
+
+            else:
+                curFrame.label_notice["text"] = "Values don't exist. Please inputing the correct value!"
+                
+                
+        except:
+            print("Error: Server is not responding")
+            messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
+            
     
     def getIp(self, curFrame):
         HOST = curFrame.entry_ip.get()
@@ -309,12 +358,43 @@ class homePage(tk.Frame):
         style.map('TButton', foreground=[('pressed', 'blue'),
                             ('active', 'red')])
         
-        self.label_title = ttk.Label(self, background = "#ffbee3",text="HOMEPAGE",font=(FONT_Nueva, 30, "bold")).grid(row=0, column=0, sticky=E)
+        self.label_title = ttk.Label(self, background = "#ffbee3",text="HOMEPAGE",font=(FONT_Nueva, 30, "bold"))
+        self.label_notice = ttk.Label(self,text="",foreground="red",background = "#ffbee3",)
         
-        self.entry_search = ttk.Entry(self, width=40, font=(FONT_Nueva, 14)).grid(row=1, column=0, sticky=E)
+        self.entry_search = ttk.Entry(self, width=40, font=("Times New Roman", 20))
         
-        self.btn_search = ttk.Button(self, text="SEARCH",cursor= "hand1").grid(row=1,column=0, sticky=E)
+        self.btn_search = tk.Button(self, text="SEARCH",font = fnt.Font(size = 20),cursor= "hand1",command = lambda: app_controller.searchData(self, CLIENT))
+        self.btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command =self.updateData)
         
+        style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
+        style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
+        style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
+        columns = ("Tỉnh/Thành phố", "Tử vong", "Chữa trị", "Ca mắc", "Phục hồi", "Ca mắc hôm nay")
+        self.table = ttk.Treeview(self,style="mystyle.Treeview",selectmode='browse',columns=columns, show='headings')
+        self.table.heading("Tỉnh/Thành phố", text="Tỉnh/Thành phố", anchor=tk.CENTER)
+        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
+        self.table.heading("Chữa trị", text="Chữa trị", anchor=tk.CENTER)
+        self.table.heading("Ca mắc", text="Ca mắc", anchor=tk.CENTER)
+        self.table.heading("Phục hồi", text="Phục hồi", anchor=tk.CENTER)
+        self.table.heading("Ca mắc hôm nay", text="Ca mắc hôm nay", anchor=tk.CENTER)
+        
+        
+        
+        self.label_title.pack(pady=10)
+        self.entry_search.pack(pady=10)
+        self.label_notice.pack(pady=2)
+        self.btn_search.pack(pady=5)
+        
+        self.btn_refresh.pack(pady=5)
+        
+        self.table.pack()
+        
+    def updateData(self):
+        self.table.delete(*self.table.get_children())
+        time.sleep(1)
+        for row in dataSearch:
+            self.table.insert('',tk.END, values=(row))
+            
         
         
         
