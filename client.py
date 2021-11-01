@@ -121,11 +121,6 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
                 curFrame.label_notice["text"] = "Username or password don't correct! Please try again!"
             elif  accepted == "1":           
                 self.showFrame(homePage)
-                
-            
-                
-            
-            
         except:
             messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
             
@@ -184,7 +179,6 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             curFrame.label_notice["text"] = "Error: Server is not responding"
             print("Error: Server is not responding")
     
-    
     # client tim kiem du lieu 
     def searchData(self, curFrame, sck):
         try:
@@ -193,7 +187,6 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             if inputsearch == "":
                 curFrame.label_notice["text"] = "Empty values!"
                 return
-            
             
             option = SEARCH
             sck.sendall(option.encode(FORMAT))
@@ -208,6 +201,7 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             print("Accepted: " + accepted)
             
             if accepted == "True":
+                curFrame.label_notice["text"] = ""
                 sck.sendall("start".encode(FORMAT))
                 item = sck.recv(1024).decode(FORMAT)
                 while(item != "end"):
@@ -241,18 +235,13 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             
         else:
             messagebox.showerror(title="ERROR", message="IP SERVER DON'T CORRECT")
-            
-            
-    
         
 class startPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
         
-        
         style = ttk.Style(self)
-
         
         # thiet ke entry
         style.map('TEntry',   foreground=[
@@ -277,8 +266,6 @@ class startPage(tk.Frame):
         button_log.configure(width=20)
         button_sign = ttk.Button(self,text="SIGN UP",cursor= "hand1", command = lambda: app_controller.showPage(signupPage)) 
         button_sign.configure(width=20)
-
-        
         
         label_title.pack(pady=5)
         label_user.pack()
@@ -290,15 +277,12 @@ class startPage(tk.Frame):
         button_log.pack(pady=5)
         button_sign.pack(pady=5)
 
-        
-        
 class signupPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
         style = ttk.Style(self)
 
-        
         # thiet ke entry
         style.map('TEntry',   foreground=[
                     ('disabled', 'gray'),
@@ -307,7 +291,6 @@ class signupPage(tk.Frame):
         # thiet ke button
         style.map('TButton', foreground=[('pressed', 'blue'),
                             ('active', 'red')])
-        
         
         label_title = ttk.Label(self, text="SIGNUP", foreground="blue",background = "#ffbee3", font=(FONT_Nueva, 30, "bold"))
         label_user = ttk.Label(self, text="Username",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
@@ -324,7 +307,6 @@ class signupPage(tk.Frame):
         button_sign = ttk.Button(self,text="SIGN UP", cursor= "hand1", command = lambda: app_controller.signupApp(self, CLIENT)) 
         button_sign.configure(width=20)
         
-        
         label_title.pack(pady=5)
         label_user.pack()
         self.entry_user.pack()
@@ -340,14 +322,12 @@ class adminPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         
-        
 class homePage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
         
         style = ttk.Style(self)
-
         
         # thiet ke entry
         style.map('TEntry',   foreground=[
@@ -378,8 +358,6 @@ class homePage(tk.Frame):
         self.table.heading("Phục hồi", text="Phục hồi", anchor=tk.CENTER)
         self.table.heading("Ca mắc hôm nay", text="Ca mắc hôm nay", anchor=tk.CENTER)
         
-        
-        
         self.label_title.pack(pady=10)
         self.entry_search.pack(pady=10)
         self.label_notice.pack(pady=2)
@@ -394,15 +372,6 @@ class homePage(tk.Frame):
         time.sleep(1)
         for row in dataSearch:
             self.table.insert('',tk.END, values=(row))
-            
-        
-        
-        
-        
-        
-        
-        
-        
         
         # tra cuu thong tin
 class ipServer(tk.Frame): #page nhap dia chi ip server

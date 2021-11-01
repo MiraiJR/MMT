@@ -35,6 +35,8 @@ databaseAccount = "account_socket"
 databaseCurency = "1"
 
 FONT_Nueva = "Nueva Std Cond"
+SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 
 
 # lay du lieu tu json 
@@ -100,7 +102,6 @@ def removeActiveAccount(conn, addr):
             username = str(row[(temp+1):])
             userAcc.remove(username)
             liveAcc.remove(row)
-            # conn.sendall("True".encode(FORMAT))
             
 # Client dang nhap vao
 def clientLogin(sck, addr):
@@ -289,13 +290,13 @@ class serverCurrencyExchange(tk.Tk):
         self.frames[FrameClass].tkraise()
     
     
-    # ask when quit
+    # hoi khi nhan thoat ung dung
     def closeApp(self):
         if messagebox.askokcancel("Quit", "You really want to quit this usefull app ?"):
             SERVER.close()
             self.destroy()
             
-            
+    # admin dang nhap vao server de mo ket noi den client
     def loginServer(self, curFrame):
         
         username = curFrame.entry_user.get()
@@ -305,20 +306,18 @@ class serverCurrencyExchange(tk.Tk):
             curFrame.label_notice["text"] = "Please typing password!"
             
         if username == "admin" and password == "123456":
+            SERVER.bind((HOST, PORT))
+            SERVER.listen()
+            # Da luong ket noi 
+            sThread = threading.Thread(target=runServer)
+            sThread.daemon = True
+            sThread.start() 
             self.showPage(adminPage)
             curFrame.label_notice["text"]=""
         else:
             curFrame.label_notice["text"] = "Username or password don't correct!"
     
-    
-        
-       
-
-        
-        
-        
-        
-        
+  
 class startPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
@@ -369,9 +368,7 @@ class adminPage(tk.Frame):
         self.configure(bg="#ffbee3")
         
         style = ttk.Style(self)
-        
-        
-        
+ 
         btn_viewData = tk.Button(self,text="VIEW DATA COVID IN VIETNAM",font = fnt.Font(size = 10),cursor= "hand1", command = lambda: app_controller.showPage(dataPage)) 
         btn_viewData.configure(width=40)
         
@@ -416,11 +413,7 @@ class viewConnectedClients(tk.Frame):
             addressk = str(row[:temp])
             username = str(row[(temp+1):])
             self.table.insert('', tk.END, values=(addressk, username))
-            
-        
-
-        
-        
+                
 class dataPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
@@ -462,9 +455,7 @@ class dataPage(tk.Frame):
         self.table.pack()
         
         btn_refresh.pack(pady=5)
-        btn_back.pack(pady=5)
-        
-        
+        btn_back.pack(pady=5)   
         
     def updateData(self):
         self.table.delete(*self.table.get_children())
@@ -473,26 +464,7 @@ class dataPage(tk.Frame):
         for row in dataCorona:
             self.table.insert('',tk.END, values=(row))
             
-        
-            
-    
-    
-   
-        
-        
-        
-        
-        
-        
-        
-SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-SERVER.bind((HOST, PORT))
-SERVER.listen()
 
-# Da luong ket noi 
-sThread = threading.Thread(target=runServer)
-sThread.daemon = False
-sThread.start()
 
 app = serverCurrencyExchange()
 app.mainloop()
