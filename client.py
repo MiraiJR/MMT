@@ -39,7 +39,7 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         
         self.title("Client App")
         self.iconbitmap('Images\money.ico')
-        self.geometry("500x300")
+        self.geometry("720x480")
         self.resizable(100, 100)
         self.protocol("WM_DELETE_WINDOW", self.closeApp)
         
@@ -61,11 +61,11 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
     def showFrame(self, container):
         frame = self.frames[container]
         if container==homePage:
-            self.geometry("700x500")
+            self.geometry("720x480")
         elif container == adminPage:
-            self.geometry("450x500")
+            self.geometry("720x480")
         else:
-            self.geometry("500x200")
+            self.geometry("720x480")
         frame.tkraise()
         
 
