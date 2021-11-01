@@ -394,8 +394,9 @@ class viewConnectedClients(tk.Frame):
         self.label_title = ttk.Label(self, text="\n ACTIVE CLIENS \n",background = "#ffbee3", font=(FONT_Nueva, 30, "bold")).pack()
         
         btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command =self.updateDataClient)
+        btn_back = ttk.Button(self,text="BACK",cursor= "hand1",command = lambda: app_controller.showPage(adminPage))
         btn_refresh.configure(width=20)
-        
+        btn_back.configure(width=20)
         style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
         style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
         style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
@@ -407,6 +408,7 @@ class viewConnectedClients(tk.Frame):
         
         self.table.pack()
         btn_refresh.pack()
+        btn_back.pack(pady=5)
     def updateDataClient(self):
         self.table.delete(*self.table.get_children())
         for row in liveAcc:
