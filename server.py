@@ -8,10 +8,13 @@ import pyodbc
 from tkinter import Entry, Tk
 import tkinter.font
 import tkinter.font as fnt
-import json,urllib.request
-
+from PIL import Image, ImageTk
 import time
 
+# lay data covid
+from getDataCovid import *
+
+# thông tin server
 HOST = "127.0.0.1"
 PORT = 65432
 FORMAT = "utf8"
@@ -23,55 +26,30 @@ LOGIN = "login"
 LOGOUT = "logout"
 SEARCH = "search"
 
-
 SUCCESS = "success"
 FAIL = "fail"
 
-
-
-# server infor
+# thông tin server sql
 serverName = "TRUONGVANHAO\SQLEXPRESS"
 databaseAccount = "account_socket"
 databaseCurency = "1"
 
+# font chữ
 FONT_Nueva = "Nueva Std Cond"
+
 SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-
-
 # lay du lieu tu json 
-def getDataFromJson():
-    data = urllib.request.urlopen("https://static.pipezero.com/covid/data.json").read()
-    output = json.loads(data)   
-    dataCovidVN = output['locations']
+def getDataFromWebsite():
     listAll = []  
-    for row in dataCovidVN:
-        list = []
-        province = row['name']
-        death = row['death']
-        treating = row['treating']
-        cases = row['cases']
-        recovered = row['recovered']
-        casesToday = row['casesToday']
-        list.append(province)
-        list.append(death)
-        list.append(treating)
-        list.append(cases)
-        list.append(recovered)
-        list.append(casesToday)           
-        listAll.append(list)
+    temp = getData()
+    listAll = temp.load_page()
     return listAll
-    
-
-
 
 # tai khoan dang hoat dong
 liveAcc = []
-
 userAcc = []
-
 userAddr = []
-
 
 
 # kiem tra tai khoan dang hoat dong
@@ -91,7 +69,7 @@ def createNewAccount(username, password):
     cursor.execute("insert into User_account(username,password) values(?,?);", (username, password))
     cursor.commit()
     
-
+# loại bỏ account khi client ngắt kết nối
 def removeActiveAccount(conn, addr):
     for row in liveAcc:
         temp = str(row).find("-")
@@ -178,7 +156,7 @@ def clientSignup(sck):
 
 # client tim kiem du lieu
 def clientSearchInfo(sck):
-    dataCovid = getDataFromJson()
+    dataCovid = getDataFromWebsite()
     
     inputsearch = sck.recv(1024).decode(FORMAT)
     
@@ -195,8 +173,6 @@ def clientSearchInfo(sck):
             sck.sendall("True".encode(FORMAT))
             break
     
-    
-    
     if checkInp == True:
         startSend = sck.recv(1024).decode(FORMAT)
         if startSend == "start":
@@ -207,10 +183,6 @@ def clientSearchInfo(sck):
             sck.sendall("end".encode(FORMAT))
     else:
         sck.sendall("False".encode(FORMAT))
-            
-    
-
-
 
 # ket noi database tai khoan
 def connectToDatabase():
@@ -235,13 +207,7 @@ def handleClient(conn, addr):
             removeActiveAccount(conn, addr)
         elif option == SEARCH:
             clientSearchInfo(conn)
-            
-    
-        
-            
-    
-    
-    
+               
 # khoi dong server
 def runServer():
     try:
@@ -254,9 +220,7 @@ def runServer():
             thr = threading.Thread(target=handleClient, args=(conn, addr))
             thr.daemon = True
             thr.start()
-
     except :
-        
         print("SERVER is closed")
         SERVER.close()
 
@@ -289,8 +253,7 @@ class serverCurrencyExchange(tk.Tk):
     def showPage(self, FrameClass):
         self.frames[FrameClass].tkraise()
     
-    
-    # hoi khi nhan thoat ung dung
+    # thông báo xác nhận thoát ứng dụng
     def closeApp(self):
         if messagebox.askokcancel("Quit", "You really want to quit this usefull app ?"):
             SERVER.close()
@@ -306,6 +269,7 @@ class serverCurrencyExchange(tk.Tk):
             curFrame.label_notice["text"] = "Please typing password!"
             
         if username == "admin" and password == "123456":
+            
             SERVER.bind((HOST, PORT))
             SERVER.listen()
             # Da luong ket noi 
@@ -323,8 +287,11 @@ class startPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
         
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
+        
         style = ttk.Style(self)
-
         
         # thiet ke entry
         style.map('TEntry',   foreground=[
@@ -335,31 +302,29 @@ class startPage(tk.Frame):
         style.map('TButton', foreground=[('pressed', 'blue'),
                             ('active', 'red')])
         
-
         label_title = ttk.Label(self, background = "yellow",foreground="blue" ,text="\nLOGIN SERVER\n",font=(FONT_Nueva, 30, "bold"))
         label_title.configure(width=500,anchor="n")
-        label_pass = ttk.Label(self, text="Password",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
         
-        self.label_notice = ttk.Label(self,text="",background = "#ffbee3",foreground="red")
-        
-        
+        # tai khoan
         label_user = ttk.Label(self, text="Username",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
         self.entry_user = ttk.Entry(self,width=40)
+        
+        # mật khẩu
+        label_pass = ttk.Label(self, text="Password",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
         self.entry_pass = ttk.Entry(self,width=40 ,show="*")
         
+        # thông báo khi có lỗi 
+        self.label_notice = ttk.Label(self,text="",background = "#ffbee3",foreground="red") 
         
         button_log = ttk.Button(self,text="LOG IN",cursor= "hand1",command = lambda: app_controller.loginServer(self)) 
         button_log.configure(width=20)
 
-        
-        
         label_title.pack(pady=5)
         label_user.pack()
         self.entry_user.pack()
         label_pass.pack()
         self.entry_pass.pack()
         self.label_notice.pack()
-
         button_log.pack(pady=5)
    
 class adminPage(tk.Frame):
@@ -367,11 +332,15 @@ class adminPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
         
-        style = ttk.Style(self)
- 
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
+        
+        # xem toàn bộ dữ liệu covid tất cả các tỉnh thành Việt Nam
         btn_viewData = tk.Button(self,text="VIEW DATA COVID IN VIETNAM",font = fnt.Font(size = 10),cursor= "hand1", command = lambda: app_controller.showPage(dataPage)) 
         btn_viewData.configure(width=40)
         
+        # xem những clients đang kết nối vào server
         btn_viewClient = tk.Button(self,text="VIEW ACTIVE CLIENTS",font = fnt.Font(size = 10),cursor= "hand1", command = lambda: app_controller.showPage(viewConnectedClients)) 
         btn_viewClient.configure(width=40)
 
@@ -385,27 +354,34 @@ class viewConnectedClients(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
         
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
+        
         style = ttk.Style(self)
-    
     
         self.label_title = ttk.Label(self, text="\n ACTIVE CLIENS \n",background = "#ffbee3", font=(FONT_Nueva, 30, "bold")).pack()
         
+        # nút tải lại dữ liệu
         btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command =self.updateDataClient)
-        btn_back = ttk.Button(self,text="BACK",cursor= "hand1",command = lambda: app_controller.showPage(adminPage))
         btn_refresh.configure(width=20)
+        
+        btn_back = ttk.Button(self,text="BACK",cursor= "hand1",command = lambda: app_controller.showPage(adminPage))
         btn_back.configure(width=20)
-        style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
-        style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
-        style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
+        
+        # Bảng hiển thị thông tin clients đang hoạt động 
+        style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12))
+        style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) 
+        style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) 
         columns = ("Address", "Username")
         self.table = ttk.Treeview(self,style="mystyle.Treeview",selectmode='browse',columns=columns, show='headings')
         self.table.heading("Address", text="Address", anchor=tk.CENTER)
         self.table.heading("Username", text="Username", anchor=tk.CENTER)
 
-        
         self.table.pack()
         btn_refresh.pack()
         btn_back.pack(pady=5)
+    # cập nhật dữ liệu 
     def updateDataClient(self):
         self.table.delete(*self.table.get_children())
         for row in liveAcc:
@@ -419,8 +395,11 @@ class dataPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
         
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
+        
         style = ttk.Style(self)
-
         
         # thiet ke entry
         style.map('TEntry',   foreground=[
@@ -440,27 +419,26 @@ class dataPage(tk.Frame):
         style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
         style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
         style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-        columns = ("Tỉnh/Thành phố", "Tử vong", "Chữa trị", "Ca mắc", "Phục hồi", "Ca mắc hôm nay")
+        columns = ("Tỉnh/Thành phố", "Ca mắc", "Chữa trị", "Phục hồi", "Tử vong", "Ca mắc hôm nay")
         self.table = ttk.Treeview(self,style="mystyle.Treeview",selectmode='browse',columns=columns, show='headings')
         self.table.heading("Tỉnh/Thành phố", text="Tỉnh/Thành phố", anchor=tk.CENTER)
-        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
-        self.table.heading("Chữa trị", text="Chữa trị", anchor=tk.CENTER)
         self.table.heading("Ca mắc", text="Ca mắc", anchor=tk.CENTER)
+        self.table.heading("Chữa trị", text="Chữa trị", anchor=tk.CENTER)
         self.table.heading("Phục hồi", text="Phục hồi", anchor=tk.CENTER)
+        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
         self.table.heading("Ca mắc hôm nay", text="Ca mắc hôm nay", anchor=tk.CENTER)
         
         btn_refresh.configure(width=20)
         btn_back.configure(width=20)
         
         self.table.pack()
-        
         btn_refresh.pack(pady=5)
         btn_back.pack(pady=5)   
         
     def updateData(self):
         self.table.delete(*self.table.get_children())
         time.sleep(1)
-        dataCorona = getDataFromJson()
+        dataCorona = getDataFromWebsite()
         for row in dataCorona:
             self.table.insert('',tk.END, values=(row))
             

@@ -9,7 +9,7 @@ from types import NoneType
 import time
 import tkinter.font as fnt
 import tkinter.font
-
+from PIL import Image, ImageTk
 
 HOST = ""
 PORT = 65432
@@ -50,7 +50,7 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in ( ipServer,startPage, homePage, signupPage, adminPage):
+        for F in ( ipServer,startPage, homePage, signupPage):
             frame = F(container, self)
             frame.grid(row = 0, column = 0, sticky="nsew")
             self.frames[F] = frame
@@ -62,14 +62,9 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         frame = self.frames[container]
         if container==homePage:
             self.geometry("720x480")
-        elif container == adminPage:
-            self.geometry("720x480")
         else:
             self.geometry("720x480")
         frame.tkraise()
-        
-
-    
         
     # ask when quit
     def closeApp(self):
@@ -83,18 +78,17 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
     # login
     def loginApp(self, curFrame, sck):
         try: 
-            dataSearch.clear()
             username = curFrame.entry_user.get()
             password = curFrame.entry_pass.get()
             if username == "" or password == "":
                 curFrame.label_notice["text"] = "Fields cannot be empty"
+                return
                  
-            
-            # Notice to server for starting log in
+            # gửi option đến server
             option = LOGIN
             sck.sendall(option.encode(FORMAT))
             
-            #send username and password to server 
+            #gửi username và password đến server
             sck.sendall(username.encode(FORMAT))
             print("Input: ", username)
             
@@ -115,15 +109,13 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
                 if messagebox.askokcancel("Notice", "The account is active in another client!"):
                     pass
             elif accepted == "3":
-                if messagebox.askokcancel("Notice", "Welcome, Admin."):
-                    self.showFrame(adminPage) 
+                messagebox.showerror(title="ERROR", message="YOU CAN'T LOGIN WITH THIS ACCOUNT!")
             elif accepted == "2":
                 curFrame.label_notice["text"] = "Username or password don't correct! Please try again!"
             elif  accepted == "1":           
                 self.showFrame(homePage)
         except:
             messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
-            
             curFrame.label_notice["text"] = "Error: Server is not responding"
             print("Error: Server is not responding")
     
@@ -137,7 +129,6 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             if(password != passwordAga):
                 curFrame.label_notice["text"] = "Password again don't correct!"
                 return
-            
             
             option = SIGNUP 
             sck.sendall(option.encode(FORMAT))                                   
@@ -183,6 +174,7 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
     def searchData(self, curFrame, sck):
         try:
             dataRecv = []
+            dataSearch.clear()
             inputsearch = curFrame.entry_search.get()
             if inputsearch == "":
                 curFrame.label_notice["text"] = "Empty values!"
@@ -211,16 +203,13 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
                     
                 dataSearch.append(dataRecv)
                 print(dataSearch)
-
             else:
                 curFrame.label_notice["text"] = "Values don't exist. Please inputing the correct value!"
-                
                 
         except:
             print("Error: Server is not responding")
             messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
             
-    
     def getIp(self, curFrame):
         HOST = curFrame.entry_ip.get()
         if HOST != "":
@@ -232,7 +221,6 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
                 messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
                 print("ERROR! CLIENT CAN'T CONNECT TO SERVER")
                 CLIENT.close()
-            
         else:
             messagebox.showerror(title="ERROR", message="IP SERVER DON'T CORRECT")
         
@@ -240,6 +228,10 @@ class startPage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
+        
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
         
         style = ttk.Style(self)
         
@@ -254,13 +246,13 @@ class startPage(tk.Frame):
           
         label_title = ttk.Label(self, text="LOGIN", foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 30, "bold"))
         
-        label_pass = ttk.Label(self, text="Password ",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
-        
-        self.label_notice = ttk.Label(self,foreground="red",background = "#ffbee3",text="")
-        
         label_user = ttk.Label(self, text="Username ",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
         self.entry_user = ttk.Entry(self,width=30)
+        
+        label_pass = ttk.Label(self, text="Password ",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
         self.entry_pass = ttk.Entry(self,width=30,show="*")
+        
+        self.label_notice = ttk.Label(self,foreground="red",background = "#ffbee3",text="")
         
         button_log = ttk.Button(self,text="LOG IN",cursor= "hand1",  command = lambda: app_controller.loginApp(self, CLIENT)) 
         button_log.configure(width=20)
@@ -273,7 +265,6 @@ class startPage(tk.Frame):
         label_pass.pack()
         self.entry_pass.pack()
         self.label_notice.pack()
-
         button_log.pack(pady=5)
         button_sign.pack(pady=5)
 
@@ -283,6 +274,10 @@ class signupPage(tk.Frame):
         self.configure(bg="#ffbee3")
         style = ttk.Style(self)
 
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
+        
         # thiet ke entry
         style.map('TEntry',   foreground=[
                     ('disabled', 'gray'),
@@ -293,14 +288,17 @@ class signupPage(tk.Frame):
                             ('active', 'red')])
         
         label_title = ttk.Label(self, text="SIGNUP", foreground="blue",background = "#ffbee3", font=(FONT_Nueva, 30, "bold"))
+        
         label_user = ttk.Label(self, text="Username",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
+        self.entry_user = ttk.Entry(self,width=30)
+        
         label_pass = ttk.Label(self, text="Password",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
+        self.entry_pass = ttk.Entry(self,width=30,show="*")
+        
         label_passAgain = ttk.Label(self, text="Password again",foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 14))
+        self.entry_passAgain = ttk.Entry(self,width=30,show="*")
         
         self.label_notice = ttk.Label(self,text="",foreground="red",background = "#ffbee3",)
-        self.entry_user = ttk.Entry(self,width=30)
-        self.entry_pass = ttk.Entry(self,width=30,show="*")
-        self.entry_passAgain = ttk.Entry(self,width=30,show="*")
         
         button_log = ttk.Button(self,text="RETURN LOG IN", cursor= "hand1", command = lambda: app_controller.showPage(startPage)) 
         button_log.configure(width=20)
@@ -315,17 +313,17 @@ class signupPage(tk.Frame):
         label_passAgain.pack()
         self.entry_passAgain.pack()
         self.label_notice.pack()
-
         button_log.pack(pady=5)
         button_sign.pack()
-class adminPage(tk.Frame):
-    def __init__(self, parent, app_controller):
-        tk.Frame.__init__(self, parent)
         
 class homePage(tk.Frame):
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
+        
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
         
         style = ttk.Style(self)
         
@@ -349,38 +347,37 @@ class homePage(tk.Frame):
         style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
         style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
         style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-        columns = ("Tỉnh/Thành phố", "Tử vong", "Chữa trị", "Ca mắc", "Phục hồi", "Ca mắc hôm nay")
+        columns = ("Tỉnh/Thành phố", "Ca mắc", "Chữa trị", "Phục hồi", "Tử vong", "Ca mắc hôm nay")
         self.table = ttk.Treeview(self,style="mystyle.Treeview",selectmode='browse',columns=columns, show='headings')
         self.table.heading("Tỉnh/Thành phố", text="Tỉnh/Thành phố", anchor=tk.CENTER)
-        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
-        self.table.heading("Chữa trị", text="Chữa trị", anchor=tk.CENTER)
         self.table.heading("Ca mắc", text="Ca mắc", anchor=tk.CENTER)
+        self.table.heading("Chữa trị", text="Chữa trị", anchor=tk.CENTER)
         self.table.heading("Phục hồi", text="Phục hồi", anchor=tk.CENTER)
+        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
         self.table.heading("Ca mắc hôm nay", text="Ca mắc hôm nay", anchor=tk.CENTER)
         
         self.label_title.pack(pady=10)
         self.entry_search.pack(pady=10)
         self.label_notice.pack(pady=2)
         self.btn_search.pack(pady=5)
-        
         self.btn_refresh.pack(pady=5)
-        
         self.table.pack()
-        
     def updateData(self):
         self.table.delete(*self.table.get_children())
         time.sleep(1)
         for row in dataSearch:
             self.table.insert('',tk.END, values=(row))
-        
-        # tra cuu thong tin
+            
 class ipServer(tk.Frame): #page nhap dia chi ip server
     def __init__(self, parent, app_controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="#ffbee3")
+
+        self.img = ImageTk.PhotoImage(file="Images/abc.jpg")
+        bg_label = ttk.Label(self, image=self.img)
+        bg_label.place(x=0,y=0)
         
         style = ttk.Style(self)
-
         
         # thiet ke entry
         style.map('TEntry',   foreground=[
@@ -393,7 +390,7 @@ class ipServer(tk.Frame): #page nhap dia chi ip server
         
         label_title = ttk.Label(self, text="INPUT IP SERVER", foreground="blue",background = "#ffbee3",font=(FONT_Nueva, 30, "bold"))
         
-        self.entry_ip = ttk.Entry(self, width=40, font=(FONT_Nueva, 14))
+        self.entry_ip = ttk.Entry(self, width=40, font=("Time New Roman", 20))
         
         btn = ttk.Button(self, text="CONNECT",cursor= "hand1", command = lambda: app_controller.getIp(self))
         btn.configure(width=30)
@@ -401,7 +398,6 @@ class ipServer(tk.Frame): #page nhap dia chi ip server
         label_title.pack(pady=5)
         self.entry_ip.pack(pady=5)
         btn.pack(pady=5)
-        
         
 app = currencyExchangeRate_VietNam_App()
 app.mainloop()
