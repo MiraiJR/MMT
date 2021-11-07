@@ -58,6 +58,3 @@ class getData(object):
             temp2.append(temp)
         driver.close() 
         return temp2        
-    
-data1 = getData()
-data1.load_page()
