@@ -220,7 +220,6 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             except:
                 messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
                 print("ERROR! CLIENT CAN'T CONNECT TO SERVER")
-                CLIENT.close()
         else:
             messagebox.showerror(title="ERROR", message="IP SERVER DON'T CORRECT")
         

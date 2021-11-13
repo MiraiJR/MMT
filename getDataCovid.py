@@ -6,7 +6,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import json,urllib.request
 
-
+#lay du lieu ca mac hang ngay cua cac tinh thanh
 def getDataFromJson():
     data = urllib.request.urlopen("https://static.pipezero.com/covid/data.json").read()
     output = json.loads(data)   
