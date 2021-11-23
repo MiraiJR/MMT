@@ -5,7 +5,6 @@ from tkinter import messagebox
 from tkinter import ttk 
 from tkinter import *
 import threading
-from types import NoneType
 import time
 import tkinter.font as fnt
 import tkinter.font
