@@ -41,9 +41,7 @@ SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # lay du lieu tu json 
 def getDataFromWebsite():
-    listAll = []  
-    temp = getData()
-    listAll = temp.load_page()
+    listAll = getDataFromJson()
     return listAll
 
 # tai khoan dang hoat dong
@@ -363,7 +361,7 @@ class viewConnectedClients(tk.Frame):
         self.label_title = ttk.Label(self, text="\n ACTIVE CLIENS \n",background = "#ffbee3", font=(FONT_Nueva, 30, "bold")).pack()
         
         # nút tải lại dữ liệu
-        btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command =self.updateDataClient)
+        btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command = self.updateDataClient)
         btn_refresh.configure(width=20)
         
         btn_back = ttk.Button(self,text="BACK",cursor= "hand1",command = lambda: app_controller.showPage(adminPage))
@@ -412,19 +410,17 @@ class dataPage(tk.Frame):
         
         self.label_title = ttk.Label(self, text="\n COVID IN VIETNAM \n",background = "#ffbee3", font=(FONT_Nueva, 30, "bold")).pack()
         
-        
+       
         btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command =self.updateData)
         btn_back = ttk.Button(self,text="BACK",cursor= "hand1",command = lambda: app_controller.showPage(adminPage))
         
         style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
         style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
         style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-        columns = ("Tỉnh/Thành phố", "Ca mắc", "Chữa trị", "Phục hồi", "Tử vong", "Ca mắc hôm nay")
+        columns = ("Tỉnh/Thành phố", "Ca mắc", "Tử vong", "Ca mắc hôm nay")
         self.table = ttk.Treeview(self,style="mystyle.Treeview",selectmode='browse',columns=columns, show='headings')
         self.table.heading("Tỉnh/Thành phố", text="Tỉnh/Thành phố", anchor=tk.CENTER)
         self.table.heading("Ca mắc", text="Ca mắc", anchor=tk.CENTER)
-        self.table.heading("Chữa trị", text="Chữa trị", anchor=tk.CENTER)
-        self.table.heading("Phục hồi", text="Phục hồi", anchor=tk.CENTER)
         self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
         self.table.heading("Ca mắc hôm nay", text="Ca mắc hôm nay", anchor=tk.CENTER)
         
@@ -441,8 +437,6 @@ class dataPage(tk.Frame):
         dataCorona = getDataFromWebsite()
         for row in dataCorona:
             self.table.insert('',tk.END, values=(row))
-            
-
 
 app = serverCurrencyExchange()
 app.mainloop()
