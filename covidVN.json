@@ -1,0 +1,380 @@
+[
+    {
+        "name": "TP. H\u1ed3 Ch\u00ed Minh",
+        "cases": 501258,
+        "casesToday": 560,
+        "death": 19389
+    },
+    {
+        "name": "B\u00ecnh D\u01b0\u01a1ng",
+        "cases": 290285,
+        "casesToday": 77,
+        "death": 3201
+    },
+    {
+        "name": "\u0110\u1ed3ng Nai",
+        "cases": 97081,
+        "casesToday": 216,
+        "death": 1313
+    },
+    {
+        "name": "T\u00e2y Ninh",
+        "cases": 72183,
+        "casesToday": 943,
+        "death": 623
+    },
+    {
+        "name": "\u0110\u1ed3ng Th\u00e1p",
+        "cases": 41872,
+        "casesToday": 701,
+        "death": 525
+    },
+    {
+        "name": "Long An",
+        "cases": 40181,
+        "casesToday": 45,
+        "death": 869
+    },
+    {
+        "name": "C\u1ea7n Th\u01a1",
+        "cases": 39422,
+        "casesToday": 711,
+        "death": 543
+    },
+    {
+        "name": "H\u00e0 N\u1ed9i",
+        "cases": 38726,
+        "casesToday": 1948,
+        "death": 98
+    },
+    {
+        "name": "Ti\u1ec1n Giang",
+        "cases": 32880,
+        "casesToday": 134,
+        "death": 899
+    },
+    {
+        "name": "C\u00e0 Mau",
+        "cases": 32499,
+        "casesToday": 433,
+        "death": 141
+    },
+    {
+        "name": "An Giang",
+        "cases": 31648,
+        "casesToday": 213,
+        "death": 904
+    },
+    {
+        "name": "Kh\u00e1nh H\u00f2a",
+        "cases": 30033,
+        "casesToday": 791,
+        "death": 161
+    },
+    {
+        "name": "S\u00f3c Tr\u0103ng",
+        "cases": 29153,
+        "casesToday": 223,
+        "death": 302
+    },
+    {
+        "name": "Ki\u00ean Giang",
+        "cases": 29097,
+        "casesToday": 204,
+        "death": 489
+    },
+    {
+        "name": "V\u0129nh Long",
+        "cases": 28643,
+        "casesToday": 892,
+        "death": 295
+    },
+    {
+        "name": "B\u1ea1c Li\u00eau",
+        "cases": 27606,
+        "casesToday": 595,
+        "death": 242
+    },
+    {
+        "name": "B\u00e0 R\u1ecba \u2013 V\u0169ng T\u00e0u",
+        "cases": 26168,
+        "casesToday": 162,
+        "death": 148
+    },
+    {
+        "name": "B\u1ebfn Tre",
+        "cases": 25103,
+        "casesToday": 281,
+        "death": 163
+    },
+    {
+        "name": "B\u00ecnh Thu\u1eadn",
+        "cases": 24970,
+        "casesToday": 140,
+        "death": 271
+    },
+    {
+        "name": "B\u00ecnh Ph\u01b0\u1edbc",
+        "cases": 20230,
+        "casesToday": 30,
+        "death": 52
+    },
+    {
+        "name": "Tr\u00e0 Vinh",
+        "cases": 19343,
+        "casesToday": 544,
+        "death": 117
+    },
+    {
+        "name": "B\u00ecnh \u0110\u1ecbnh",
+        "cases": 13858,
+        "casesToday": 501,
+        "death": 55
+    },
+    {
+        "name": "Th\u1eeba Thi\u00ean Hu\u1ebf",
+        "cases": 11752,
+        "casesToday": 381,
+        "death": 12
+    },
+    {
+        "name": "H\u1eadu Giang",
+        "cases": 11680,
+        "casesToday": 63,
+        "death": 38
+    },
+    {
+        "name": "\u0110\u00e0 N\u1eb5ng",
+        "cases": 11039,
+        "casesToday": 86,
+        "death": 108
+    },
+    {
+        "name": "\u0110\u1eafk L\u1eafk",
+        "cases": 11012,
+        "casesToday": 134,
+        "death": 63
+    },
+    {
+        "name": "B\u1eafc Ninh",
+        "cases": 10240,
+        "casesToday": 326,
+        "death": 17
+    },
+    {
+        "name": "L\u00e2m \u0110\u1ed3ng",
+        "cases": 7770,
+        "casesToday": 263,
+        "death": 24
+    },
+    {
+        "name": "B\u1eafc Giang",
+        "cases": 7644,
+        "casesToday": 40,
+        "death": 14
+    },
+    {
+        "name": "Ngh\u1ec7 An",
+        "cases": 7455,
+        "casesToday": 93,
+        "death": 34
+    },
+    {
+        "name": "Thanh H\u00f3a",
+        "cases": 7029,
+        "casesToday": 249,
+        "death": 13
+    },
+    {
+        "name": "H\u00e0 Giang",
+        "cases": 6669,
+        "casesToday": 122,
+        "death": 6
+    },
+    {
+        "name": "Gia Lai",
+        "cases": 6611,
+        "casesToday": 136,
+        "death": 15
+    },
+    {
+        "name": "H\u1ea3i Ph\u00f2ng",
+        "cases": 6604,
+        "casesToday": 931,
+        "death": 7
+    },
+    {
+        "name": "Ph\u00fa Y\u00ean",
+        "cases": 6161,
+        "casesToday": 112,
+        "death": 47
+    },
+    {
+        "name": "Qu\u1ea3ng Nam",
+        "cases": 5550,
+        "casesToday": 96,
+        "death": 19
+    },
+    {
+        "name": "Ninh Thu\u1eadn",
+        "cases": 5506,
+        "casesToday": 56,
+        "death": 52
+    },
+    {
+        "name": "Qu\u1ea3ng Ng\u00e3i",
+        "cases": 5167,
+        "casesToday": 201,
+        "death": 25
+    },
+    {
+        "name": "\u0110\u1eafk N\u00f4ng",
+        "cases": 4584,
+        "casesToday": 98,
+        "death": 13
+    },
+    {
+        "name": "H\u01b0ng Y\u00ean",
+        "cases": 4314,
+        "casesToday": 234,
+        "death": 2
+    },
+    {
+        "name": "Qu\u1ea3ng B\u00ecnh",
+        "cases": 3536,
+        "casesToday": 14,
+        "death": 8
+    },
+    {
+        "name": "Nam \u0110\u1ecbnh",
+        "cases": 3022,
+        "casesToday": 78,
+        "death": 2
+    },
+    {
+        "name": "H\u1ea3i D\u01b0\u01a1ng",
+        "cases": 2937,
+        "casesToday": 0,
+        "death": 1
+    },
+    {
+        "name": "Ph\u00fa Th\u1ecd",
+        "cases": 2840,
+        "casesToday": 50,
+        "death": 3
+    },
+    {
+        "name": "Qu\u1ea3ng Ninh",
+        "cases": 2736,
+        "casesToday": 103,
+        "death": 1
+    },
+    {
+        "name": "V\u0129nh Ph\u00fac",
+        "cases": 2638,
+        "casesToday": 85,
+        "death": 6
+    },
+    {
+        "name": "Th\u00e1i B\u00ecnh",
+        "cases": 2439,
+        "casesToday": 42,
+        "death": 0
+    },
+    {
+        "name": "H\u00e0 Nam",
+        "cases": 2085,
+        "casesToday": 98,
+        "death": 0
+    },
+    {
+        "name": "Qu\u1ea3ng Tr\u1ecb",
+        "cases": 1894,
+        "casesToday": 53,
+        "death": 4
+    },
+    {
+        "name": "H\u00e0 T\u0129nh",
+        "cases": 1572,
+        "casesToday": 18,
+        "death": 5
+    },
+    {
+        "name": "Th\u00e1i Nguy\u00ean",
+        "cases": 1572,
+        "casesToday": 59,
+        "death": 1
+    },
+    {
+        "name": "L\u1ea1ng S\u01a1n",
+        "cases": 1326,
+        "casesToday": 0,
+        "death": 5
+    },
+    {
+        "name": "H\u00f2a B\u00ecnh",
+        "cases": 1225,
+        "casesToday": 45,
+        "death": 3
+    },
+    {
+        "name": "Tuy\u00ean Quang",
+        "cases": 974,
+        "casesToday": 28,
+        "death": 0
+    },
+    {
+        "name": "S\u01a1n La",
+        "cases": 863,
+        "casesToday": 126,
+        "death": 0
+    },
+    {
+        "name": "Kon Tum",
+        "cases": 832,
+        "casesToday": 24,
+        "death": 0
+    },
+    {
+        "name": "\u0110i\u1ec7n Bi\u00ean",
+        "cases": 573,
+        "casesToday": 9,
+        "death": 0
+    },
+    {
+        "name": "Y\u00ean B\u00e1i",
+        "cases": 557,
+        "casesToday": 21,
+        "death": 0
+    },
+    {
+        "name": "Ninh B\u00ecnh",
+        "cases": 525,
+        "casesToday": 0,
+        "death": 0
+    },
+    {
+        "name": "L\u00e0o Cai",
+        "cases": 425,
+        "casesToday": 19,
+        "death": 0
+    },
+    {
+        "name": "Cao B\u1eb1ng",
+        "cases": 411,
+        "casesToday": 22,
+        "death": 1
+    },
+    {
+        "name": "Lai Ch\u00e2u",
+        "cases": 85,
+        "casesToday": 8,
+        "death": 0
+    },
+    {
+        "name": "B\u1eafc K\u1ea1n",
+        "cases": 50,
+        "casesToday": 0,
+        "death": 0
+    }
+]

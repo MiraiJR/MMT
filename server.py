@@ -39,10 +39,12 @@ FONT_Nueva = "Nueva Std Cond"
 
 SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# lay du lieu tu json 
-def getDataFromWebsite():
-    listAll = getDataFromJson()
-    return listAll
+# lay du lieu tu json
+def createDataCovid():
+    temp = getDataFromJson()
+    writeDataToJson("covidVN.json", temp) #viet du lieu vao file json duoi dang json string
+    
+    
 
 # tai khoan dang hoat dong
 liveAcc = []
@@ -154,7 +156,7 @@ def clientSignup(sck):
 
 # client tim kiem du lieu
 def clientSearchInfo(sck):
-    dataCovid = getDataFromWebsite()
+    dataCovid = readDataFromJson("covidVN.json") #doc du lieu tu file json 
     
     inputsearch = sck.recv(1024).decode(FORMAT)
     
@@ -165,7 +167,7 @@ def clientSearchInfo(sck):
     checkInp = False
     temp = []
     for row in dataCovid:
-        if str(row[0]) == inputsearch:
+        if row['name'] == inputsearch:
             temp = row
             checkInp = True
             sck.sendall("True".encode(FORMAT))
@@ -175,8 +177,9 @@ def clientSearchInfo(sck):
         startSend = sck.recv(1024).decode(FORMAT)
         if startSend == "start":
             for item in temp:
-                kj = str(item)
+                kj = str(temp[item])
                 sck.sendall(kj.encode(FORMAT))
+                print(item, ": ", temp[item])
                 sck.recv(1024)
             sck.sendall("end".encode(FORMAT))
     else:
@@ -229,7 +232,7 @@ class serverCurrencyExchange(tk.Tk):
         tk.Tk.__init__(self)
         
         self.title("Server App")
-        self.iconbitmap('Images\money.ico')
+        self.iconbitmap('Images\covid.ico')
         self.geometry("720x480")
         self.resizable(100, 100)
         self.protocol("WM_DELETE_WINDOW", self.closeApp)
@@ -278,6 +281,7 @@ class serverCurrencyExchange(tk.Tk):
             curFrame.label_notice["text"]=""
         else:
             curFrame.label_notice["text"] = "Username or password don't correct!"
+    
     
   
 class startPage(tk.Frame):
@@ -335,15 +339,16 @@ class adminPage(tk.Frame):
         bg_label.place(x=0,y=0)
         
         # xem toàn bộ dữ liệu covid tất cả các tỉnh thành Việt Nam
-        btn_viewData = tk.Button(self,text="VIEW DATA COVID IN VIETNAM",font = fnt.Font(size = 10),cursor= "hand1", command = lambda: app_controller.showPage(dataPage)) 
+        btn_viewData = tk.Button(self,text="VIEW DATA COVID IN VIETNAM",font = fnt.Font(size = 15),cursor= "hand1", command = lambda: app_controller.showPage(dataPage)) 
         btn_viewData.configure(width=40)
+        btn_viewData.place(relx = 0.5, rely = 0.4, anchor = CENTER)
         
         # xem những clients đang kết nối vào server
-        btn_viewClient = tk.Button(self,text="VIEW ACTIVE CLIENTS",font = fnt.Font(size = 10),cursor= "hand1", command = lambda: app_controller.showPage(viewConnectedClients)) 
+        btn_viewClient = tk.Button(self,text="VIEW ACTIVE CLIENTS",font = fnt.Font(size = 15),cursor= "hand1", command = lambda: app_controller.showPage(viewConnectedClients)) 
         btn_viewClient.configure(width=40)
-
-        btn_viewData.pack(pady=10)
-        btn_viewClient.pack(pady=10)     
+        btn_viewClient.place(relx = 0.5, rely = 0.6, anchor = CENTER)
+        # btn_viewData.pack(pady=10)
+        # btn_viewClient.pack(pady=10)     
     
         
    
@@ -417,12 +422,12 @@ class dataPage(tk.Frame):
         style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
         style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
         style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-        columns = ("Tỉnh/Thành phố", "Ca mắc", "Tử vong", "Ca mắc hôm nay")
+        columns = ("Tỉnh/Thành phố", "Ca mắc", "Ca mắc hôm nay", "Tử vong")
         self.table = ttk.Treeview(self,style="mystyle.Treeview",selectmode='browse',columns=columns, show='headings')
         self.table.heading("Tỉnh/Thành phố", text="Tỉnh/Thành phố", anchor=tk.CENTER)
         self.table.heading("Ca mắc", text="Ca mắc", anchor=tk.CENTER)
-        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
         self.table.heading("Ca mắc hôm nay", text="Ca mắc hôm nay", anchor=tk.CENTER)
+        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
         
         btn_refresh.configure(width=20)
         btn_back.configure(width=20)
@@ -433,10 +438,12 @@ class dataPage(tk.Frame):
         
     def updateData(self):
         self.table.delete(*self.table.get_children())
-        time.sleep(1)
-        dataCorona = getDataFromWebsite()
+        createDataCovid()
+        dataCorona = readDataFromJson("covidVN.json")
         for row in dataCorona:
-            self.table.insert('',tk.END, values=(row))
+            self.table.insert('',tk.END, values=(row['name'], row['cases'], row['casesToday'], row['death']))
+
+
 
 app = serverCurrencyExchange()
 app.mainloop()

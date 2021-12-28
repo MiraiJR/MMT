@@ -37,7 +37,7 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
         tk.Tk.__init__(self)
         
         self.title("Client App")
-        self.iconbitmap('Images\money.ico')
+        self.iconbitmap('Images\covid.ico')
         self.geometry("720x480")
         self.resizable(100, 100)
         self.protocol("WM_DELETE_WINDOW", self.closeApp)
@@ -175,12 +175,12 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             dataRecv = []
             dataSearch.clear()
             inputsearch = curFrame.entry_search.get()
-            if inputsearch == "":
+            if inputsearch == "": #chuoi rong
                 curFrame.label_notice["text"] = "Empty values!"
                 return
             
-            option = SEARCH
-            sck.sendall(option.encode(FORMAT))
+            option = SEARCH 
+            sck.sendall(option.encode(FORMAT)) # gui option search cho server
             
             sck.sendall(inputsearch.encode(FORMAT))
             print("Search: ", inputsearch)
@@ -340,17 +340,18 @@ class homePage(tk.Frame):
         self.entry_search = ttk.Entry(self, width=40, font=("Times New Roman", 20))
         
         self.btn_search = tk.Button(self, text="SEARCH",font = fnt.Font(size = 20),cursor= "hand1",command = lambda: app_controller.searchData(self, CLIENT))
+        self.after(4000, self.updateData)
         self.btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command =self.updateData)
         
         style.configure("mystyle.Treeview" ,background = "#44d2a8", highlightthickness=1, bd=1, font=('Times New Roman', 12)) # Modify the font of the body
         style.configure("mystyle.Treeview.Heading", font=(FONT_Nueva, 15,'bold')) # Modify the font of the headings
         style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-        columns = ("Tỉnh/Thành phố", "Ca mắc", "Tử vong", "Ca mắc hôm nay")
+        columns = ("Tỉnh/Thành phố", "Ca mắc", "Ca mắc hôm nay", "Tử vong")
         self.table = ttk.Treeview(self,style="mystyle.Treeview",selectmode='browse',columns=columns, show='headings')
         self.table.heading("Tỉnh/Thành phố", text="Tỉnh/Thành phố", anchor=tk.CENTER)
         self.table.heading("Ca mắc", text="Ca mắc", anchor=tk.CENTER)
-        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
         self.table.heading("Ca mắc hôm nay", text="Ca mắc hôm nay", anchor=tk.CENTER)
+        self.table.heading("Tử vong", text="Tử vong", anchor=tk.CENTER)
         
         self.label_title.pack(pady=10)
         self.entry_search.pack(pady=10)
@@ -360,9 +361,9 @@ class homePage(tk.Frame):
         self.table.pack()
     def updateData(self):
         self.table.delete(*self.table.get_children())
-        time.sleep(1)
         for row in dataSearch:
             self.table.insert('',tk.END, values=(row))
+        self.table.pack()
             
 class ipServer(tk.Frame): #page nhap dia chi ip server
     def __init__(self, parent, app_controller):
