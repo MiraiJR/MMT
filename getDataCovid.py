@@ -1,6 +1,5 @@
 import json,urllib.request
 
-
 class tinhThanh:
     def __init__(self, name, cases, casesToday, death):
         self.name = name
@@ -27,10 +26,3 @@ def writeDataToJson(nameFile, list):
 def readDataFromJson(nameFile):
     with open(nameFile) as f_in:
         return json.load(f_in)
-# ku = []
-# dataCovid = readDataFromJson("covidVN.json")
-# for row in dataCovid:
-#     if(row['name'] == "Bình Định"):
-#         ku = row
-# for item in ku:
-#     print(ku[item])
