@@ -30,7 +30,7 @@ SUCCESS = "success"
 FAIL = "fail"
 
 # thông tin server sql
-serverName = "TRUONGVANHAO\SQLEXPRESS"
+serverName = "NDMQLAPTOP\SQLEXPRESS"
 databaseAccount = "account_socket"
 databaseCurency = "1"
 
@@ -200,7 +200,7 @@ def clientReadData(sck):
 def connectToDatabase():
     adminAcc = "admin" #tai khoan admin
     adminPass = "123456" 
-    conx = pyodbc.connect("DRIVER={ODBC Driver 17 for SQL Server};\
+    conx = pyodbc.connect("DRIVER={SQL Server};\
                             SERVER="+serverName+";\
                             DATABASE="+databaseAccount+"; UID="+adminAcc+"; PWD="+adminPass+"")
     cursor = conx.cursor()
@@ -285,6 +285,15 @@ class serverCurrencyExchange(tk.Tk):
             SERVER.close()
             self.destroy()
             
+    # Ấn vào VIEW ACTIVE CLIENTS sẽ hiện ngay danh sách clients
+    def refreshClient(self):
+        self.frames[viewConnectedClients].table.delete(*self.frames[viewConnectedClients].table.get_children())
+        for row in liveAcc:
+            temp = str(row).find("-")
+            addressk = str(row[:temp])
+            username = str(row[(temp+1):])
+            self.frames[viewConnectedClients].table.insert('', tk.END, values=(addressk, username))
+            
     # admin dang nhap vao server de mo ket noi den client
     def loginServer(self, curFrame):
         
@@ -353,12 +362,14 @@ class adminPage(tk.Frame):
         bg_label.place(x=0,y=0)
         
         # xem toàn bộ dữ liệu covid tất cả các tỉnh thành Việt Nam
-        btn_viewData = tk.Button(self,text="VIEW DATA COVID IN VIETNAM",font = fnt.Font(size = 15),cursor= "hand1", command = lambda: app_controller.showPage(dataPage)) 
+        btn_viewData = tk.Button(self,text="VIEW DATA COVID IN VIETNAM",font = fnt.Font(size = 15),cursor= "hand1", 
+                                 command = lambda: app_controller.showPage(dataPage)) 
         btn_viewData.configure(width=40)
         btn_viewData.place(x=540, y=150, anchor = CENTER)
         
         # xem những clients đang kết nối vào server
-        btn_viewClient = tk.Button(self,text="VIEW ACTIVE CLIENTS",font = fnt.Font(size = 15),cursor= "hand1", command = lambda: app_controller.showPage(viewConnectedClients)) 
+        btn_viewClient = tk.Button(self,text="VIEW ACTIVE CLIENTS",font = fnt.Font(size = 15),cursor= "hand1", 
+                                   command = lambda: [app_controller.refreshClient(), app_controller.showPage(viewConnectedClients)]) 
         btn_viewClient.configure(width=40)
         btn_viewClient.place(x = 540, y=250, anchor = CENTER)     
     
@@ -376,7 +387,7 @@ class viewConnectedClients(tk.Frame):
         
         # nút tải lại dữ liệu
         btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command = lambda: [self.table.delete(*self.table.get_children()), 
-                                                                                        self.updateDataClient])
+                                                                                        self.after(100, self.updateDataClient)])
         btn_refresh.configure(width=20)
         # nút quay lại
         btn_back = ttk.Button(self,text="BACK",cursor= "hand1",command = lambda: app_controller.showPage(adminPage))
@@ -395,7 +406,9 @@ class viewConnectedClients(tk.Frame):
         
         self.table.heading("Address", text="Address", anchor=tk.CENTER)
         self.table.heading("Username", text="Username", anchor=tk.CENTER)
-
+        self.table.column("Address", anchor=CENTER)
+        self.table.column("Username", anchor=CENTER)
+    
         self.table.pack()
         btn_refresh.place(x=540, y=450, anchor=CENTER)
         btn_back.place(x=540, y=500, anchor=CENTER)
