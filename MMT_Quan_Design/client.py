@@ -224,8 +224,9 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             print("Error: Server is not responding")
             messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
             
-    def dataPrint(self, sck):
+    def dataPrint(self, curFrame, sck):
         try:
+            dataSearch.clear()
             dataRecv = []
             sck.sendall("read".encode(FORMAT)) # gui option search cho server
             item = sck.recv(1024).decode(FORMAT)
@@ -238,7 +239,10 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
                 item = sck.recv(1024).decode(FORMAT)
                 dataSearch.append(dataRecv.copy())
                 dataRecv.clear()
-        
+                
+            curFrame.table.delete(*curFrame.table.get_children())
+            for row in dataSearch:
+                curFrame.table.insert('',tk.END, values=(row))
         except:
             print("error")
     def getIp(self, curFrame):
@@ -247,8 +251,9 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             try:
                 server_addr = (HOST, PORT)
                 CLIENT.connect(server_addr)
-                self.showFrame(startPage)
-                self.dataPrint(CLIENT)
+                self.dataPrint(self.frames[homePage], CLIENT)
+                self.showFrame(homePage)
+                
             except:
                 messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
                 print("ERROR! CLIENT CAN'T CONNECT TO SERVER")
@@ -342,7 +347,8 @@ class homePage(tk.Frame):
         
         self.btn_search = tk.Button(self, text=" SEARCH ",font = fnt.Font(size = 13), cursor= "hand1",
                                     command = lambda: [app_controller.searchData(self, CLIENT), self.after(500, self.updateData)])
-        self.btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command =self.updateData)
+        self.btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command = lambda: app_controller.dataPrint(self, CLIENT))
+                                                                                        
         
         tree_frame = Frame(self) #Create Frame
         tree_frame.place(x=540,y=280, anchor=CENTER)
@@ -361,8 +367,6 @@ class homePage(tk.Frame):
         self.table.column("Ca mắc", anchor=CENTER)
         self.table.column("Ca mắc hôm nay", anchor=CENTER)
         self.table.column("Tử vong", anchor=CENTER)
-        self.after(100, self.updateData())
-        self.after(200, self.updateData())
         
         self.table.pack()
         self.label_search.place(x=280, y=417)
@@ -390,6 +394,7 @@ class ipServer(tk.Frame): #page nhap dia chi ip server
         self.entry_ip = ttk.Entry(self, width=40, font=("Time New Roman", 15), justify = CENTER)
         
         btn = ttk.Button(self, text="CONNECT",cursor= "hand1", command = lambda: app_controller.getIp(self))
+        
         btn.configure(width=30)
 
         self.entry_ip.place(x=30, y=280)
