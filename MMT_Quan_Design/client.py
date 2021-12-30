@@ -252,7 +252,7 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
                 server_addr = (HOST, PORT)
                 CLIENT.connect(server_addr)
                 self.dataPrint(self.frames[homePage], CLIENT)
-                self.showFrame(homePage)
+                self.showFrame(startPage)
                 
             except:
                 messagebox.showerror(title="ERROR", message="ERROR! CLIENT CAN'T CONNECT TO SERVER")
