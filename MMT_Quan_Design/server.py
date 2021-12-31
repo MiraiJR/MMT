@@ -125,7 +125,7 @@ def clientLogin(sck, addr):
 # client dang ky tai khoan moi
 def clientSignup(sck):
     print("Sign up:-------------")
-    username = sck.recv(1023).decode(FORMAT)
+    username = sck.recv(1024).decode(FORMAT)
     print("Username: ", username)
     sck.sendall(username.encode(FORMAT))
     
