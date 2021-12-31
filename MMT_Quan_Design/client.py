@@ -174,15 +174,14 @@ class currencyExchangeRate_VietNam_App(tk.Tk):
             
     # logout account 
     def logoutApp(self,curFrame, sck):
-        try:
-            option = LOGOUT
-            sck.sendall(option.encode(FORMAT))
-            accepted = sck.recv(1024).decode(FORMAT)
-            if accepted == "True":
+        if messagebox.askokcancel("Logout", "You really want to logout ?"):
+            try:
+                option = LOGOUT
+                sck.sendall(option.encode(FORMAT))
                 self.showFrame(startPage)
-        except:
-            curFrame.label_notice["text"] = "Error: Server is not responding"
-            print("Error: Server is not responding")
+            except:
+                curFrame.label_notice["text"] = "Error: Server is not responding"
+                print("Error: Server is not responding")
     
     # client tim kiem du lieu 
     def searchData(self, curFrame, sck):
@@ -348,7 +347,7 @@ class homePage(tk.Frame):
         self.btn_search = tk.Button(self, text=" SEARCH ",font = fnt.Font(size = 13), cursor= "hand1",
                                     command = lambda: [app_controller.searchData(self, CLIENT), self.after(500, self.updateData)])
         self.btn_refresh = ttk.Button(self,text="REFRESH",cursor= "hand1",command = lambda: app_controller.dataPrint(self, CLIENT))
-                                                                                        
+        self.btn_logout = ttk.Button(self, text="LOGOUT", cursor="hand1",command= lambda: app_controller.logoutApp(self, CLIENT))                         
         
         tree_frame = Frame(self) #Create Frame
         tree_frame.place(x=540,y=280, anchor=CENTER)
@@ -374,6 +373,7 @@ class homePage(tk.Frame):
         self.label_notice.place(x=540, y=460, anchor=CENTER)
         self.btn_search.place(x=540, y=495, anchor=CENTER)
         self.btn_refresh.place(x=540, y=540, anchor=CENTER)
+        self.btn_logout.place(x=10,y=10)
          
     def updateData(self):
         self.table.delete(*self.table.get_children())

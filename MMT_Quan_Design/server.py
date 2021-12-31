@@ -154,6 +154,7 @@ def clientSignup(sck):
 
 # client tim kiem du lieu
 def clientSearchInfo(sck):
+    print("Client Searching------------------------")
     dataCovid = readDataFromJson("covidVN.json") #doc du lieu tu file json 
     
     inputsearch = sck.recv(1024).decode(FORMAT)
@@ -185,6 +186,7 @@ def clientSearchInfo(sck):
 
 #client doc data
 def clientReadData(sck):
+    print("Client read data---------------------")
     dataCovid = readDataFromJson("covidVN.json")
     for row in dataCovid:
         for i in row:
@@ -194,6 +196,7 @@ def clientReadData(sck):
         sck.sendall("end".encode(FORMAT))
         sck.recv(1024)
     sck.sendall("endrow".encode(FORMAT))
+    print("Client read success!")
     
     
 # ket noi database tai khoan
